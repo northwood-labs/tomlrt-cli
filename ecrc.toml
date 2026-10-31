@@ -4,24 +4,33 @@
 ##
 
 # @config-manager:start config
-Debug = false
-IgnoreDefaults = true
-NoColor = false
+Debug           = false
+IgnoreDefaults  = true
+NoColor         = false
 SpacesAfterTabs = false
-Verbose = false
+Verbose         = false
 # @config-manager:end config
 
 Exclude = [
   # @config-manager:start excludes
   # Directories
   "\\.config-manager\\.d/",
+  "\\.github/workflows/",
   "\\.kiro/",
   "\\.kirograph/",
   "\\.rumdl_cache/",
+  "\\.venv",
+  "\\.vite/",
   "node_modules/",
   "testdata/",
+  "testfixtures/.*$",
 
   # Files
+  "Cargo\\.lock$",
+  "LICENSE(\\.(md|txt))?$",
+  "Taskfile\\.([^\\.]+)\\.(yaml|yml)$",
+  "Taskfile\\.(yaml|yml)$",
+  "TerraformOptions.json$",
   "\\.7z$",
   "\\.avif$",
   "\\.bak$",
@@ -46,6 +55,7 @@ Exclude = [
   "\\.jpeg$",
   "\\.jpg$",
   "\\.js\\.map$",
+  "\\.jsonschema\\.json$",
   "\\.lefthook-local/.*$",
   "\\.lefthook/.*$",
   "\\.licenses\\.cache\\.json$",
@@ -67,8 +77,10 @@ Exclude = [
   "\\.terraform-docs\\.yml$",
   "\\.terraform/.*$",
   "\\.terraform\\.lock\\.hcl$",
-  "\\.tfstate\\.backup$",
   "\\.tfstate$",
+  "\\.tfstate\\.backup$",
+  "\\.tmpl$",
+  "\\.tpl$",
   "\\.ttf$",
   "\\.txt$",
   "\\.vscode/.*?\\.(json|sh|toml|yaml|yml)$",
@@ -84,15 +96,21 @@ Exclude = [
   "^package-lock\\.json$",
   "aube-lock\\.yaml$",
   "cliff\\.toml$",
+  "composer\\.lock$",
   "go\\.mod$",
   "go\\.sum$",
   "go\\.tools\\.mod$",
   "go\\.tools\\.sum$",
+  "golangci-lint\\.sarif",
+  "manifest\\.json$",
   "min\\.css$",
   "min\\.js$",
   "package-lock\\.json$",
+  "package\\.json$",
+  "pnpm-lock\\.yaml$",
+  "pnpm-workspace\\.yaml$",
+  "poetry\\.lock$",
   "standard\\.mk$",
-  "Taskfile\\.([^\\.]+)\\.(yaml|yml)$",
-  "Taskfile\\.(yaml|yml)$",
+  "yarn\\.lock$",
   # @config-manager:end excludes
 ]

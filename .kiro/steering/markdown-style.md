@@ -1,11 +1,15 @@
 ---
+# @config-manager:start zdp-frontmatter
 inclusion: fileMatch
 fileMatchPattern: "**/*.md"
+# @config-manager:end zdp-frontmatter
 ---
 
 # Markdown Style Guide
 
+<!-- @config-manager:start overview -->
 This project enforces Markdown conventions via `.rumdl.toml` and `.editorconfig`. Follow these rules when writing or editing any `.md` file.
+<!-- @config-manager:end overview -->
 
 ## Indentation and whitespace
 
@@ -16,6 +20,13 @@ This project enforces Markdown conventions via `.rumdl.toml` and `.editorconfig`
 * Maximum one consecutive blank line (no double blanks).
 * One blank line above and below headings, lists, tables, fenced code blocks, and horizontal rules.
 <!-- @config-manager:end whitespace -->
+
+## Wrapping
+
+<!-- @config-manager:start wrapping -->
+* Paragraphs, sentences, and list items should not wrap. They should continue to run on a single line.
+* Allow the tools consuming Markdown to soft-wrap the content.
+<!-- @config-manager:end wrapping -->
 
 ## Headings
 
@@ -110,9 +121,9 @@ These terms must use exact casing wherever they appear in prose (not enforced in
 
 ## HTML
 
-<!-- @config-manager:start elements -->
+<!-- @config-manager:start htmltags -->
 Inline HTML is restricted to these allowed elements: `a`, `b`, `br`, `code`, `details`, `div`, `img`, `li`, `nobr`, `ol`, `p`, `pre`, `span`, `summary`, `ul`. All other HTML elements will trigger a lint warning.
-<!-- @config-manager:end elements -->
+<!-- @config-manager:end htmltags -->
 
 ## Blockquotes
 

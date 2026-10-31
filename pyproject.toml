@@ -5,8 +5,8 @@
   readme = "README.md"
   requires-python = ">=3.12"
   license = "MIT"
-  authors = [ { email = "ryan@ryanparman.com", name = "Ryan Parman" } ]
-  keywords = [ "cli", "config", "edit", "rust", "toml" ]
+  authors = [{email = "ryan@ryanparman.com", name = "Ryan Parman"}]
+  keywords = ["cli", "config", "edit", "rust", "toml"]
   classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -19,29 +19,29 @@
     "Topic :: Utilities",
     "Typing :: Typed",
   ]
-  dependencies = [ "tomlrt>=1.7.2,<2" ]
+  dependencies = ["tomlrt>=1.7.2,<2"]
 
   [project.urls]
-    Homepage = "https://github.com/northwood-labs/tomlrt-cli"
-    Issues = "https://github.com/northwood-labs/tomlrt-cli/issues"
+    Homepage   = "https://github.com/northwood-labs/tomlrt-cli"
+    Issues     = "https://github.com/northwood-labs/tomlrt-cli/issues"
     Repository = "https://github.com/northwood-labs/tomlrt-cli"
 
   [project.scripts]
     tomlrt-cli = "tomlrt_cli.cli:main"
 
 [dependency-groups]
-  dev = [ "hypothesis>=6.155.1,<7", "ruff>=0.15,<1", "tryke>=0.0.29,<1", "zuban>=0.8,<1" ]
+  dev = ["hypothesis>=6.155.1,<7", "ruff>=0.15,<1", "tryke>=0.0.29,<1", "zuban>=0.8,<1"]
 
 [build-system]
-  requires = [ "uv_build>=0.11.17,<0.12.0" ]
+  requires      = ["uv_build>=0.11.17,<0.12.0"]
   build-backend = "uv_build"
 
 [tool.ruff]
   target-version = "py312"
-  line-length = 120
+  line-length    = 120
 
   [tool.ruff.lint]
-    select = [ "E", "F", "I", "N", "W", "UP" ]
+    select = ["E", "F", "I", "N", "UP", "W"]
 
 [tool.tryke]
-  src = [ ".", "src" ]
+  src = [".", "src"]

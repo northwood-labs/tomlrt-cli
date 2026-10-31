@@ -98,11 +98,11 @@ Unit tests for `_parse_path()`. Covers each syntax variant (dotted, quoted, brac
 
 ## Decision points and side effects
 
-### Decision: when does the tool write to disk?
+### Decision: When does the tool write to disk?
 
 Only when `--output` is explicitly provided. This is a deliberate safety choice — without it, the tool is read-only (stdout). Users must opt in to file mutation.
 
-### Decision: path parsing lives in `cli.py`, not a separate module
+### Decision: Path parsing lives in `cli.py`, not a separate module
 
 The parser is ~30 lines. Extracting it to its own module would add import indirection without meaningful encapsulation benefit at this scale. If the parser grows (escape sequences, array indexing), it should be extracted.
 
@@ -125,29 +125,29 @@ TOML files are UTF-8 by spec. Opening in binary mode (`"rb"`) lets tomlrt handle
 
 ## Risks, gaps, and follow-up inspections
 
-### Risk: non-atomic file writes
+### Risk: Non-atomic file writes
 
 **Current behavior:** `open(path, "w")` truncates the file before writing. If the process is interrupted between truncation and write completion, data is lost.
 
 **Recommendation:** Write to a temporary file in the same directory, then `os.replace()` to the target path. This is atomic on POSIX filesystems.
 
-### Risk: no error handling for missing keys
+### Risk: No error handling for missing keys
 
 **Current behavior:** A `KeyError` propagates as an unhandled exception with a Python traceback.
 
 **Recommendation:** Catch `KeyError` in the path-walk loop and emit a user-friendly error message with the failing segment and available keys.
 
-### Risk: no type coercion for `--value`
+### Risk: No type coercion for `--value`
 
 **Current behavior:** Values are always written as TOML strings. `--value 42` produces `key = "42"`, not `key = 42`.
 
 **Recommendation:** Add a `--type` flag (`string`, `int`, `float`, `bool`) or auto-detect from the value format.
 
-### Gap: no `--create` / `--install` mode
+### Gap: No `--create` / `--install` mode
 
 `tomlrt` has `install()` which creates intermediate tables. The current CLI requires the full path to already exist. Adding an `--install` flag would enable creating new keys.
 
-### Gap: no stdin support
+### Gap: No stdin support
 
 The `input` argument is always a file path. Supporting `-` as stdin would enable piping.
 
@@ -155,7 +155,7 @@ The `input` argument is always a file path. Supporting `-` as stdin would enable
 
 If a user passes `--value` but forgets `--path`, the value is never used and no warning is emitted.
 
-### Follow-up inspection: tomlrt version pinning
+### Follow-up inspection: Tomlrt version pinning
 
 `tomlrt>=1.7.2` is a minimum bound. A breaking change in tomlrt's API (e.g., `install()` signature change) would silently break the CLI. Consider an upper bound or lock file discipline.
 

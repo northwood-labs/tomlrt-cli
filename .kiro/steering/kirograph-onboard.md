@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Kirograph: Onboarding Workflow
+# KiroGraph: Onboarding Workflow
 
 Follow these steps to quickly understand a new codebase.
 

@@ -33,6 +33,7 @@
     "littlefoxteam.vscode-python-test-adapter",
     "mads-hartmann.bash-ide-vscode",
     "melt-inc.yamlfmt-vscode",
+    "meta.pyrefly",
     "mkxml.vscode-filesize",
     "ms-python.python",
     "ms-vscode.makefile-tools",
@@ -50,6 +51,7 @@
     "steditor.line-endings",
     "stkb.rewrap",
     "tamasfe.even-better-toml",
+    "task.vscode-task",
     "thebutlah.reorder-python-imports",
     "timonwong.shellcheck",
     "tomoki1207.pdf",
@@ -58,7 +60,6 @@
     "wmaurer.change-case",
     "xshrim.txt-syntax",
     "yzhang.markdown-all-in-one",
-    "zardoy.fix-all-json",
-    "zuban.zubanls"
+    "zardoy.fix-all-json"
   ]
 }

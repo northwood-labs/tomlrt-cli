@@ -1,8 +1,9 @@
 // @config-manager:start imports
 // https://github.com/jdx/hk/blob/main/hk.pkl
 // https://github.com/jdx/hk/releases/latest
-amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.6.0/hk@2.6.0#/Config.pkl"
+
+import "package://github.com/jdx/hk/releases/download/v2.6.0/hk@2.6.0#/Builtins.pkl"
 // @config-manager:end imports
 
 local linters = new Mapping<String, Group> {
@@ -10,14 +11,18 @@ local linters = new Mapping<String, Group> {
   ["standard"] = new Group {
     steps {
       ["check-added-large-files"] = (Builtins.check_added_large_files) {}
-      ["check-byte-order-marker"] = (Builtins.check_byte_order_marker) {}
+      ["check-byte-order-marker"] = (Builtins.byte_order_marker) {}
       ["check-case-conflict"] = (Builtins.check_case_conflict) {}
       ["check-executables-have-shebangs"] = (Builtins.check_executables_have_shebangs) {}
       ["check-json"] = (Builtins.jq) {}
       ["check-merge-conflict"] = (Builtins.check_merge_conflict) {}
       ["check-symlinks"] = (Builtins.check_symlinks) {}
-      ["check-toml-fmt"] = (Builtins.taplo_format) {}
-      ["check-toml-lint"] = (Builtins.taplo) {}
+      ["check-toml-fmt"] = (Builtins.taplo_format) {
+        glob = "**/*.toml"
+      }
+      ["check-toml-lint"] = (Builtins.taplo) {
+        glob = "**/*.toml"
+      }
       ["check-trailing-whitespace"] = (Builtins.trailing_whitespace) {}
       ["check-xml"] = (Builtins.xmllint) {}
       ["check-yaml"] = (Builtins.yamlfmt) {}
@@ -28,24 +33,33 @@ local linters = new Mapping<String, Group> {
         fix = "cd {{ workspace }} && editorconfig-checker"
       }
       ["end-of-file-fixer"] = (Builtins.newlines) {}
+      // fix-smart-quotes
+      // harper
       ["lychee"] = (Builtins.lychee) {
         profiles = List("slow")
       }
       ["markdown-lint"] = (Builtins.rumdl) {}
+      // mdschema
       ["mise-fmt"] = (Builtins.mise) {}
       ["mixed-line-ending"] = (Builtins.mixed_line_ending) {}
-      ["pinact"] = (Builtins.pinact) {}
-      ["pinact-update"] = (Builtins.pinact_update) {}
+      ["pinact"] = (Builtins.pinact) {
+        profiles = List("slow")
+      }
+      ["pinact-update"] = (Builtins.pinact_update) {
+        profiles = List("slow")
+      }
       ["pkl-eval"] = (Builtins.pkl) {
         glob = "**/*.pkl"
       }
       ["pkl-format"] = (Builtins.pkl_format) {
         glob = "**/*.pkl"
       }
+      // vale
     }
   }
   ["containers"] = new Group {
     steps {
+      // dclint
       ["hadolint"] = (Builtins.hadolint) {}
     }
   }
@@ -59,14 +73,60 @@ local linters = new Mapping<String, Group> {
   }
   ["frontend"] = new Group {
     steps {
+      ["oxfmt"] = (Builtins.oxfmt) {
+        workspace_indicator = ".oxfmtrc.jsonc"
+        glob = "**/*.{jsx?,tsx?}"
+        check = "cd {{ workspace }} && oxfmt --check --no-error-on-unmatched-pattern {{ files }}"
+        fix = "cd {{ workspace }} && oxfmt --write --no-error-on-unmatched-pattern {{ files }}"
+      }
+      ["oxlint"] = (Builtins.ox_lint) {
+        workspace_indicator = ".oxlintrc.jsonc"
+        glob = "**/*.{jsx?,tsx?}"
+
+        // https://pkl-lang.org/main/current/language-reference/index.html#multiline-strings
+        check =
+          """
+          cd {{ workspace }} && \\
+          oxlint --import-plugin --jsdoc-plugin --jsx-a11y-plugin --react-perf-plugin \\
+              --no-error-on-unmatched-pattern {{ files }}
+          """
+        fix =
+          """
+          cd {{ workspace }} && \\
+          oxlint --import-plugin --jsdoc-plugin --jsx-a11y-plugin --react-perf-plugin \\
+              --fix --no-error-on-unmatched-pattern {{ files }}
+          """
+      }
       ["sort-package-json"] = (Builtins.sort_package_json) {
-        check = "aubx -y sort-package-json --check {{ files }}"
-        fix = "aubx -y sort-package-json {{ files }}"
+        check = "bunx sort-package-json --check {{ files }}"
+        fix = "bunx sort-package-json {{ files }}"
       }
       ["svg-optimize"] {
         glob = "**/*.svg"
         fix = "ogvs --config tools/ogvs.config.yaml {{ files }}"
       }
+      ["tsc"] = (Builtins.tsc) {
+        workspace_indicator = "tsconfig.json"
+        glob = "**/*.{jsx?,tsx?}"
+        check = "tsc --skipLibCheck --noEmit --project {{ workspace_indicator }}"
+        fix = "tsc --skipLibCheck --noEmit --project {{ workspace_indicator }}"
+      }
+      // vp - https://viteplus.dev
+    }
+  }
+  ["github"] = new Group {
+    steps {
+      ["ghatm"] {
+        glob = ".github/workflows/*.y*ml"
+        fix = "ghatm set -auto -repo $(git github-remote)"
+      }
+      ["ghalint-action"] = (Builtins.ghalint_action) {}
+      ["ghalint-workflow"] = (Builtins.ghalint_workflow) {}
+      ["jactionlint"] {
+        glob = ".github/workflows/*.y*ml"
+        fix = "jactionlint --fix --online --profile=correctness {{ files }}"
+      }
+      ["zizmor"] = (Builtins.zizmor) {}
     }
   }
   ["golang"] = new Group {
@@ -109,19 +169,19 @@ local linters = new Mapping<String, Group> {
             "go-mod-tidy",
             "go-modernize",
             "go-same-receiver-pointer",
-            "go-vet",
-            "golines",
+            "go-vet"
+            // "golines",
           )
         profiles = List("slow")
       }
-      ["golines"] {
-        workspace_indicator = "go.mod"
-        glob = "**/*.go"
-        check =
-          "golines --base-formatter=gofumpt --write-output --max-len=120 --dry-run {{ files }}"
-        fix = "golines --base-formatter=gofumpt --write-output --max-len=120 {{ files }}"
-        profiles = List("slow")
-      }
+      // ["golines"] {
+      //   workspace_indicator = "go.mod"
+      //   glob = "**/*.go"
+      //   check =
+      //     "golines --base-formatter=gofumpt --write-output --max-len=120 --dry-run {{ files }}"
+      //   fix = "golines --base-formatter=gofumpt --write-output --max-len=120 {{ files }}"
+      //   profiles = List("slow")
+      // }
       ["go-mod-tidy"] {
         workspace_indicator = "go.mod"
         glob = "**/*.go"
@@ -155,6 +215,12 @@ local linters = new Mapping<String, Group> {
       }
     }
   }
+  ["grpc"] = new Group {
+    steps {
+    // buf-format
+    // buf-lint
+    }
+  }
   ["python"] = new Group {
     steps {
       ["python-check-ast"] = (Builtins.python_check_ast) {
@@ -176,8 +242,21 @@ local linters = new Mapping<String, Group> {
       }
       ["python-typechecking"] {
         glob = List("**/*.py", "**/*.pyi")
-        check = "uv tool run zuban check {{ files }}"
+        check = "uv tool run pyrefly check {{ files }}"
       }
+    }
+  }
+  ["rest-api"] = new Group {
+    steps {
+    // vacuum
+    }
+  }
+  ["rust"] = new Group {
+    steps {
+    // cargo-check
+    // cargo-clippy
+    // cargo-fmt
+    // rustfmt
     }
   }
   ["shell"] = new Group {
@@ -191,6 +270,7 @@ local linters = new Mapping<String, Group> {
   }
   ["security"] = new Group {
     steps {
+      ["detect-private-key"] = (Builtins.detect_private_key) {}
       ["govulncheck"] {
         workspace_indicator = "go.mod"
         glob = "**/*.go"
@@ -202,11 +282,11 @@ local linters = new Mapping<String, Group> {
         profiles = List("slow")
       }
       ["trivy-licenses"] {
-        check = "trivy fs --config trivy-license.yaml --ignorefile .trivyignore ."
+        check = "trivy fs --config trivy-license.yaml --ignorefile .trivyignore.yaml ."
         profiles = List("slow")
       }
       ["trivy-vulns"] {
-        check = "trivy fs --config trivy-vuln.yaml --ignorefile .trivyignore ."
+        check = "trivy fs --config trivy-vuln.yaml --ignorefile .trivyignore.yaml ."
         profiles = List("slow")
       }
       ["trufflehog"] {
@@ -216,8 +296,14 @@ local linters = new Mapping<String, Group> {
       }
     }
   }
+  ["swift"] = new Group {
+    steps {
+    // swiftlint
+    }
+  }
   ["tofu"] = new Group {
     steps {
+      // hclfmt
       ["opentofu-format"] = (Builtins.tofu) {
         glob = List("**/*.tf", "**/*.tofu", "**/*.tfvars", "**/*.tftest.hcl")
       }
@@ -241,7 +327,7 @@ hooks {
   }
   ["pre-push"] {
     env {
-      ["HK_PROFILE"] = "!slow"
+      ["HK_PROFILE"] = "slow"
     }
     steps = linters
   }

@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Kirograph: Refactoring Workflow
+# KiroGraph: Refactoring Workflow
 
 Follow these steps to plan and execute safe refactoring.
 

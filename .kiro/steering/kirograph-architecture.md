@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Kirograph: Architecture Exploration Workflow
+# KiroGraph: Architecture Exploration Workflow
 
 Follow these steps to understand the high-level structure of the codebase.
 
