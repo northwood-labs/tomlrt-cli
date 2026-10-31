@@ -54,7 +54,7 @@ def _tmpfile(content: str = SAMPLE_TOML) -> str:
 with describe("read entire document"):
 
     @test("outputs full document to stdout")
-    def test_full_document():
+    def test_full_document() -> None:
         path = _tmpfile()
         code, out = _run(path)
         expect(code).to_equal(0)
@@ -62,7 +62,7 @@ with describe("read entire document"):
         expect(out).to_contain('name = "test"')
 
     @test("preserves comments in output")
-    def test_preserves_comments():
+    def test_preserves_comments() -> None:
         # Round-trip preservation is the core value proposition.
         path = _tmpfile()
         code, out = _run(path)
@@ -73,21 +73,21 @@ with describe("read entire document"):
 with describe("read a specific value with --path"):
 
     @test("reads a top-level key")
-    def test_read_top_level():
+    def test_read_top_level() -> None:
         path = _tmpfile()
         code, out = _run("--path", "project.name", path)
         expect(code).to_equal(0)
         expect(out).to_equal("test")
 
     @test("reads a nested key")
-    def test_read_nested():
+    def test_read_nested() -> None:
         path = _tmpfile()
         code, out = _run("--path", "project.nested.key", path)
         expect(code).to_equal(0)
         expect(out).to_equal("deep")
 
     @test("non-existent path raises KeyError")
-    def test_missing_path():
+    def test_missing_path() -> None:
         path = _tmpfile()
         sys.argv = ["tomlrt-cli", "--path", "does.not.exist", path]
 
@@ -97,7 +97,7 @@ with describe("read a specific value with --path"):
 with describe("write with --value"):
 
     @test("--value without --output writes modified document to stdout")
-    def test_value_to_stdout():
+    def test_value_to_stdout() -> None:
         # The "preview" behavior — user can inspect before persisting.
         path = _tmpfile()
         code, out = _run("--path", "project.version", "--value", "2.0.0", path)
@@ -105,7 +105,7 @@ with describe("write with --value"):
         expect(out).to_contain('version = "2.0.0"')
 
     @test("--value with --output writes to file")
-    def test_value_to_file():
+    def test_value_to_file() -> None:
         path = _tmpfile()
         code, _ = _run(
             "--path",
@@ -124,7 +124,7 @@ with describe("write with --value"):
         expect(content).to_contain('version = "2.0.0"')
 
     @test("--value preserves comments after write")
-    def test_value_preserves_comments():
+    def test_value_preserves_comments() -> None:
         # Confirms the round-trip serializer doesn't strip comments
         # when a value is modified.
         path = _tmpfile()
@@ -133,7 +133,7 @@ with describe("write with --value"):
         expect(out).to_contain("# A comment that should survive round-trips")
 
     @test("--value without --path is silently ignored")
-    def test_value_without_path():
+    def test_value_without_path() -> None:
         # Documents current behavior: --value alone has no effect.
         path = _tmpfile()
         code, out = _run("--value", "ignored", path)
@@ -144,7 +144,7 @@ with describe("write with --value"):
 with describe("--output without --value"):
 
     @test("writes full document to output file")
-    def test_output_full_doc():
+    def test_output_full_doc() -> None:
         src = _tmpfile()
         dst = _tmpfile("")
         code, _ = _run("--output", dst, src)
@@ -160,7 +160,7 @@ with describe("--output without --value"):
 with describe("error cases"):
 
     @test("non-existent input file raises FileNotFoundError")
-    def test_missing_file():
+    def test_missing_file() -> None:
         sys.argv = ["tomlrt-cli", "/tmp/does_not_exist_xyz.toml"]
 
         expect(lambda: main()).to_raise(FileNotFoundError)

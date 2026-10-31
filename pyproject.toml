@@ -45,3 +45,6 @@
 
 [tool.tryke]
   src = [".", "src"]
+
+[tool.pyrefly]
+  project-includes = ["**/*.ipynb", "**/*.py*"]

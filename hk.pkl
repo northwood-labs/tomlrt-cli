@@ -242,7 +242,10 @@ local linters = new Mapping<String, Group> {
       }
       ["python-typechecking"] {
         glob = List("**/*.py", "**/*.pyi")
-        check = "uv tool run pyrefly check {{ files }}"
+        check =
+          "uv tool run pyrefly check --output-format=full-text-with-github --summary=full --min-severity=info --remove-unused-ignores=all --preset=strict {{ files }}"
+        fix =
+          "uv tool run pyrefly infer --preset=strict --infer-with-first-use=true --use-ignore-files=true --infer-return-types=checked --containers=true --return-types=true --parameter-types=true --imports=true"
       }
     }
   }

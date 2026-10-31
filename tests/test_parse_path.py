@@ -21,34 +21,34 @@ _UNICODE_CATEGORIES: tuple[Literal["L"], Literal["N"], Literal["P"]] = ("L", "N"
 with describe("bare dotted paths"):
 
     @test("simple dotted path")
-    def test_simple_dotted():
+    def test_simple_dotted() -> None:
         # The most common case — plain identifiers separated by dots.
         expect(_parse_path("version.v26.alpine")).to_equal(("version", "v26", "alpine"))
 
     @test("single segment")
-    def test_single_segment():
+    def test_single_segment() -> None:
         # Edge case: a path with no dots should still produce a
         # one-element tuple, not an empty result.
         expect(_parse_path("name")).to_equal(("name",))
 
     @test("empty string produces empty tuple")
-    def test_empty_string():
+    def test_empty_string() -> None:
         # Defensive: empty input should not crash.
         expect(_parse_path("")).to_equal(())
 
     @test("leading dot is treated as separator")
-    def test_leading_dot():
+    def test_leading_dot() -> None:
         # Leading dot means "start with separator" — first segment
         # is whatever follows.
         expect(_parse_path(".a.b")).to_equal(("a", "b"))
 
     @test("trailing dot is ignored")
-    def test_trailing_dot():
+    def test_trailing_dot() -> None:
         # Trailing dot has nothing after it — no empty segment produced.
         expect(_parse_path("a.b.")).to_equal(("a", "b"))
 
     @test("adjacent dots produce no empty segments")
-    def test_adjacent_dots():
+    def test_adjacent_dots() -> None:
         # Multiple consecutive dots are just multiple separators.
         expect(_parse_path("a..b")).to_equal(("a", "b"))
 
@@ -56,66 +56,66 @@ with describe("bare dotted paths"):
 with describe("double-quoted keys"):
 
     @test("quoted key containing a dot")
-    def test_quoted_dot():
+    def test_quoted_dot() -> None:
         # Keys like "3.14" contain a dot that must not be treated as a
         # separator. Quoting protects the literal value.
         expect(_parse_path('version."3.14".alpine')).to_equal(("version", "3.14", "alpine"))
 
     @test("quoted key at start of path")
-    def test_quoted_start():
+    def test_quoted_start() -> None:
         expect(_parse_path('"weird.key".child')).to_equal(("weird.key", "child"))
 
     @test("quoted key at end of path")
-    def test_quoted_end():
+    def test_quoted_end() -> None:
         expect(_parse_path('parent."weird.key"')).to_equal(("parent", "weird.key"))
 
 
 with describe("single-quoted keys"):
 
     @test("single-quoted key containing a dot")
-    def test_single_quoted_dot():
+    def test_single_quoted_dot() -> None:
         # Single quotes should work identically to double quotes.
         expect(_parse_path("version.'3.14'.alpine")).to_equal(("version", "3.14", "alpine"))
 
     @test("single-quoted key at start")
-    def test_single_quoted_start():
+    def test_single_quoted_start() -> None:
         expect(_parse_path("'a.b'.c")).to_equal(("a.b", "c"))
 
 
 with describe("bracket notation"):
 
     @test("bracket with double quotes")
-    def test_bracket_double():
+    def test_bracket_double() -> None:
         # Bracket syntax mirrors JavaScript/jq conventions.
         expect(_parse_path('version["3.14"].alpine')).to_equal(("version", "3.14", "alpine"))
 
     @test("bracket with single quotes")
-    def test_bracket_single():
+    def test_bracket_single() -> None:
         expect(_parse_path("version['3.14'].alpine")).to_equal(("version", "3.14", "alpine"))
 
     @test("unquoted bracket content")
-    def test_bracket_unquoted():
+    def test_bracket_unquoted() -> None:
         # Unquoted bracket: everything between [ and ] is the key.
         expect(_parse_path("version[alpine].pin")).to_equal(("version", "alpine", "pin"))
 
     @test("bracket at start of path")
-    def test_bracket_start():
+    def test_bracket_start() -> None:
         expect(_parse_path('["top"].child')).to_equal(("top", "child"))
 
 
 with describe("mixed notation"):
 
     @test("all styles combined in one path")
-    def test_mixed():
+    def test_mixed() -> None:
         # Verifies the parser handles transitions between styles.
         expect(_parse_path('a["b"].c."d.e"')).to_equal(("a", "b", "c", "d.e"))
 
     @test("bracket immediately after bracket")
-    def test_consecutive_brackets():
+    def test_consecutive_brackets() -> None:
         expect(_parse_path('["a"]["b"]')).to_equal(("a", "b"))
 
     @test("dot between brackets")
-    def test_dot_between_brackets():
+    def test_dot_between_brackets() -> None:
         expect(_parse_path('["a"].["b"]')).to_equal(("a", "b"))
 
 
@@ -129,7 +129,7 @@ with describe("property-based tests"):
             max_size=5,
         )
     )
-    def test_bare_keys_roundtrip(keys: list[str]):
+    def test_bare_keys_roundtrip(keys: list[str]) -> None:
         # Property: joining bare keys with dots and re-parsing must
         # yield the original list. This catches off-by-one errors and
         # ensures the parser doesn't consume characters it shouldn't.
@@ -148,7 +148,7 @@ with describe("property-based tests"):
             max_size=4,
         )
     )
-    def test_quoted_keys_roundtrip(keys: list[str]):
+    def test_quoted_keys_roundtrip(keys: list[str]) -> None:
         # Property: wrapping each key in double quotes and joining with
         # dots must produce the original keys after parsing. This covers
         # keys containing dots, spaces, and other special characters.
